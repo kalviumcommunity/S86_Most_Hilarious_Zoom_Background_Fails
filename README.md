@@ -14,7 +14,7 @@ The **"Most Hilarious Zoom Background Fails"** web application allows users to c
   - Users can create, edit, and delete entries for Zoom background fails.
   
 - **Ratings & Comments:**
-  - Each Zoom background fail can be rated, and users can leave comments for each entry.
+  - Each Zoom background fail can be rated, and users can leave comments for each entry..
   
 - **Responsive Design:**
   - The app is designed to adapt to both desktop and mobile screen sizes using CSS.
