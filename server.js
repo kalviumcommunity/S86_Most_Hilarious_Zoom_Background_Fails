@@ -36,8 +36,11 @@ const User = require('./models/user');
 const UserFeedback = require('./models/userFeedback');
 const ZoomFail = require('./models/zoomFail');
 
-// Routes
-app.get('/', (req, res) => res.json({ message: dbStatus }));
+// ✅ Home Route (Displays DB Connection Status)
+app.get('/', (req, res) => {
+    const connectionStatus = mongoose.connection.readyState === 1 ? "✅ Database connected" : "❌ Database connection failed";
+    res.json({ message: "Welcome to ASAP", dbStatus: connectionStatus });
+});
 
 // Example Routes for Fetching Data
 app.get('/users', async (req, res) => {

@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "The **\"Most Hilarious Zoom Background Fails\"** web application allows users to create, manage, and rate a list of hilarious Zoom background fails. Users can add, edit, and delete items, rate them, and leave comments. The application stores all data locally in the browser using **JavaScript** and **Local Storage**, which ensures data persistence even after the page reloads. This project does not require a backend or database.",
   "main": "server.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "mongoose": "^8.11.0"
+  }
 }
