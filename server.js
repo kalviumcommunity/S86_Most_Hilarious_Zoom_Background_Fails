@@ -1,11 +1,15 @@
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+console.log("🚀 Starting Server..."); // Log before anything runs
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+
+console.log("📌 MongoDB URI:", MONGO_URI ? "Loaded from .env" : "Not Found");
 
 let dbStatus = "⏳ Connecting...";
 
@@ -24,41 +28,14 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.json());
 app.use(cors());
 
-// Import Models
-const Admin = require('./models/admin');
-const AppSettings = require('./models/appSettings');
-const Category = require('./models/category');
-const Comment = require('./models/comment');
-const LoginSession = require('./models/loginSession');
-const Rating = require('./models/rating');
-const Tag = require('./models/tag');
-const User = require('./models/user');
-const UserFeedback = require('./models/userFeedback');
-const ZoomFail = require('./models/zoomFail');
+// Import Routes
+const routes = require('./routes');
+app.use('/api', routes);
 
 // ✅ Home Route (Displays DB Connection Status)
 app.get('/', (req, res) => {
     const connectionStatus = mongoose.connection.readyState === 1 ? "✅ Database connected" : "❌ Database connection failed";
     res.json({ message: "Welcome to ASAP", dbStatus: connectionStatus });
-});
-
-// Example Routes for Fetching Data
-app.get('/users', async (req, res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ error: '❌ Failed to fetch users', details: error.message });
-    }
-});
-
-app.get('/zoomFails', async (req, res) => {
-    try {
-        const zoomFails = await ZoomFail.find();
-        res.json(zoomFails);
-    } catch (error) {
-        res.status(500).json({ error: '❌ Failed to fetch Zoom Fails', details: error.message });
-    }
 });
 
 // Start Server
