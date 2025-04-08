@@ -36,7 +36,11 @@ const User = require('./models/user');
 const UserFeedback = require('./models/userFeedback');
 const ZoomFail = require('./models/zoomFail');
 
-// Routes
+// ✅ Import and use custom routes (includes dummy task route)
+const routes = require('./routes');
+app.use(routes);
+
+// Health Check Route
 app.get('/', (req, res) => res.json({ message: dbStatus }));
 
 // Example Routes for Fetching Data
