@@ -10,7 +10,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/api/comments', commentRoutes);
+
+// Mount routes under /api
+app.use('/api', commentRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
@@ -20,4 +22,6 @@ mongoose.connect(process.env.MONGO_URI)
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   })
-  .catch(err => console.error('❌ MongoDB connection failed:', err.message));
+  .catch(err => {
+    console.error('❌ MongoDB connection failed:', err.message);
+  });
