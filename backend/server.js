@@ -7,14 +7,10 @@ const commentRoutes = require('./routes/commentRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/comments', commentRoutes);
 
-// Mount routes under /api
-app.use('/api', commentRoutes);
-
-// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB');
