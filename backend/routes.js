@@ -1,33 +1,26 @@
-import express from 'express';
-import Comment from './models/comment.js';
-
+const express = require('express');
 const router = express.Router();
+const Comment = require('./models/comment');
 
-// Update a comment
-router.put('/comments/:id', async (req, res) => {
-  const { id } = req.params;
-  const { author, text } = req.body;
-  try {
-    const updatedComment = await Comment.findByIdAndUpdate(
-      id,
-      { author, text },
-      { new: true }
-    );
-    res.json(updatedComment);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update comment' });
-  }
+// Create a comment
+router.post('/comments', async (req, res) => {
+    try {
+        const newComment = new Comment(req.body);
+        await newComment.save();
+        res.status(201).json({ message: "✅ Comment added", comment: newComment });
+    } catch (error) {
+        res.status(500).json({ error: "❌ Failed to add comment", details: error.message });
+    }
 });
 
-// Delete a comment
-router.delete('/comments/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    await Comment.findByIdAndDelete(id);
-    res.json({ message: 'Comment deleted' });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to delete comment' });
-  }
+// Fetch all comments
+router.get('/comments', async (req, res) => {
+    try {
+        const comments = await Comment.find();
+        res.json(comments);
+    } catch (error) {
+        res.status(500).json({ error: "❌ Failed to fetch comments", details: error.message });
+    }
 });
 
-export default router;
+module.exports = router;

@@ -1,59 +1,59 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Comment = require('../models/comment');
-
 const router = express.Router();
 
-// CREATE with validation
+// Create
 router.post(
-  '/comments',
+  '/',
   [
-    body('author').notEmpty().withMessage('Author is required'),
-    body('text').notEmpty().withMessage('Comment text is required'),
+    body('author').notEmpty(),
+    body('text').notEmpty(),
+    body('created_by').notEmpty()
   ],
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     try {
-      const newComment = new Comment(req.body);
-      await newComment.save();
-      res.status(201).json(newComment);
+      const comment = new Comment(req.body);
+      await comment.save();
+      res.status(201).json(comment);
     } catch (err) {
-      res.status(500).json({ message: 'Server Error', error: err.message });
+      res.status(500).json({ error: err.message });
     }
   }
 );
 
-// GET all comments
-router.get('/comments', async (req, res) => {
+// Read (with optional filter)
+router.get('/', async (req, res) => {
+  const { user } = req.query;
   try {
-    const comments = await Comment.find();
+    const filter = user ? { created_by: user } : {};
+    const comments = await Comment.find(filter);
     res.json(comments);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching comments', error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// UPDATE comment
-router.put('/comments/:id', async (req, res) => {
+// Update
+router.put('/:id', async (req, res) => {
   try {
-    const updated = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
+    const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(comment);
   } catch (err) {
-    res.status(500).json({ message: 'Error updating comment', error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// DELETE comment
-router.delete('/comments/:id', async (req, res) => {
+// Delete
+router.delete('/:id', async (req, res) => {
   try {
     await Comment.findByIdAndDelete(req.params.id);
     res.json({ message: 'Comment deleted' });
   } catch (err) {
-    res.status(500).json({ message: 'Error deleting comment', error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
