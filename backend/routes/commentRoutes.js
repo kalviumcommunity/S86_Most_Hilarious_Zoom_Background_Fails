@@ -1,59 +1,33 @@
+// routes/commentRoutes.js
 const express = require('express');
-const { body, validationResult } = require('express-validator');
-const Comment = require('../models/comment');
+const { Comment, User } = require('../models'); // Check if these models exist
 const router = express.Router();
 
-// Create
-router.post(
-  '/',
-  [
-    body('author').notEmpty(),
-    body('text').notEmpty(),
-    body('created_by').notEmpty()
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    try {
-      const comment = new Comment(req.body);
-      await comment.save();
-      res.status(201).json(comment);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  }
-);
-
-// Read (with optional filter)
-router.get('/', async (req, res) => {
-  const { user } = req.query;
+// Get all comments
+router.get('/comments', async (req, res) => {
   try {
-    const filter = user ? { created_by: user } : {};
-    const comments = await Comment.find(filter);
+    const comments = await Comment.findAll({
+      include: User, // Assuming the User model is linked with Comment
+    });
+    res.json(comments); // Send back the comments in response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch comments" }); // Make sure error messages are clear
+  }
+});
+
+// Get comments by user
+router.get('/comments/user/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const comments = await Comment.findAll({
+      where: { createdBy: userId },
+      include: User,
+    });
     res.json(comments);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Update
-router.put('/:id', async (req, res) => {
-  try {
-    const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(comment);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Delete
-router.delete('/:id', async (req, res) => {
-  try {
-    await Comment.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Comment deleted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch comments" });
   }
 });
 
