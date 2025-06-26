@@ -1,18 +1,22 @@
+require('dotenv').config();
 const express = require('express');
-const sequelize = require('./config/sequelize');
-const User = require('./models/User');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, async () => {
-  console.log(`Server is running on port ${port}`);
-  
-  // Sync the models with the database
-  try {
-    await sequelize.sync();  // Creates the tables if they don't exist
-    console.log('✅ Models synchronized with the database');
-  } catch (error) {
-    console.error('❌ Error synchronizing models:', error.message);
-  }
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend origin
+  credentials: true
+}));
+app.use(express.json());
+app.use(cookieParser());
+
+// Routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
