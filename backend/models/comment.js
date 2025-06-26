@@ -1,7 +1,7 @@
 // models/Comment.js
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/Database').sequelize;
-const User = require('./User'); // Import User model
+const User = require('./user'); // Import User model
 
 const Comment = sequelize.define('Comment', {
   content: {
