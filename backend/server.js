@@ -1,23 +1,18 @@
-require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const commentRoutes = require('./routes/commentRoutes');
+const sequelize = require('./config/sequelize');
+const User = require('./models/User');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-app.use('/api/comments', commentRoutes);
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch(err => {
-    console.error('❌ MongoDB connection failed:', err.message);
-  });
+app.listen(port, async () => {
+  console.log(`Server is running on port ${port}`);
+  
+  // Sync the models with the database
+  try {
+    await sequelize.sync();  // Creates the tables if they don't exist
+    console.log('✅ Models synchronized with the database');
+  } catch (error) {
+    console.error('❌ Error synchronizing models:', error.message);
+  }
+});

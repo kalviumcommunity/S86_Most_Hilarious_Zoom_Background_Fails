@@ -1,9 +1,20 @@
-const mongoose = require('mongoose');
+// models/Comment.js
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/Database').sequelize;
+const User = require('./User'); // Import User model
 
-const commentSchema = new mongoose.Schema({
-  author: { type: String, required: true },
-  text: { type: String, required: true },
-  created_by: { type: String, required: true }
+const Comment = sequelize.define('Comment', {
+  content: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  createdBy: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,   // Refers to the User model
+      key: 'id',     // Foreign key in the Comment table
+    },
+  },
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+module.exports = Comment;

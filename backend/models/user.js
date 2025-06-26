@@ -1,33 +1,20 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/sequelize');  // Import the sequelize instance
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
   username: {
-    type: String,
-    required: true,
-    unique: true
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
-    type: String,
-    required: true,
-    unique: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
   },
   password: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-  date_joined: {
-    type: Date,
-    default: Date.now
-  },
-  profile_picture: {
-    type: String,
-    default: 'defaultProfilePic.jpg'  // Store URL or filename for profile picture
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false
-  }
 });
 
-const User = mongoose.model('User', userSchema);
 module.exports = User;
